@@ -283,7 +283,9 @@
       "server/providers/common/source-root.js",
       "server/standalone/key-setup.js",
       "src/keySetupCore.mjs",
-      "server/standalone/key-setup-hardening.mjs"
+      "server/standalone/key-setup-hardening.mjs",
+      "src/voice/localConfig.js",
+      "src/voice/localProfiles.json"
     ],
     "external": []
   },
@@ -366,7 +368,9 @@
       "src/ui/mapSource.js",
       "src/ui/mapSourceControls.js",
       "src/mapStackChips.js",
-      "src/keySetupCore.mjs"
+      "src/keySetupCore.mjs",
+      "src/voice/localConfig.js",
+      "src/voice/localProfiles.json"
     ],
     "external": []
   },
@@ -379,7 +383,9 @@
       "src/loadingFeedback.js",
       "src/data/installationFeedback.js",
       "src/keySetupCore.mjs",
-      "src/data/feedState.js"
+      "src/data/feedState.js",
+      "src/voice/localConfig.js",
+      "src/voice/localProfiles.json"
     ],
     "external": []
   },
@@ -580,7 +586,9 @@
       "src/ui/aircraftDisplay.js",
       "src/ui/layerBindings.js",
       "src/ui/displayBindings.js",
-      "src/ui/shellFacade.js"
+      "src/ui/shellFacade.js",
+      "src/voice/localConfig.js",
+      "src/voice/localProfiles.json"
     ],
     "external": ["cesium"]
   },
@@ -1105,7 +1113,9 @@
       "src/maps/imagery.js",
       "src/maps/registry.js",
       "src/maps/terrain.js",
-      "src/keySetupCore.mjs"
+      "src/keySetupCore.mjs",
+      "src/voice/localConfig.js",
+      "src/voice/localProfiles.json"
     ],
     "external": ["cesium"]
   },
@@ -1139,7 +1149,17 @@
       "src/voice/realtimeFacade.js",
       "src/voice/realtimeRadio.js",
       "src/voice/realtimeTurns.js",
-      "src/voice/realtimeConnection.js"
+      "src/voice/realtimeConnection.js",
+      "src/voice/configuredSession.js",
+      "src/voice/localSession.js",
+      "src/voice/localConversation.js",
+      "src/voice/actionSchemas.js",
+      "src/voice/browserLocalRuntime.js",
+      "src/voice/localModelCache.js",
+      "src/voice/localModels.json",
+      "src/voice/localConfig.js",
+      "src/voice/localProfiles.json",
+      "src/voice/localAudioCapture.js"
     ],
     "external": []
   },
@@ -1750,7 +1770,20 @@
       "src/scenes/shotPresentation.js",
       "src/scenes/packs/registry.js",
       "src/scenes/packs/defaults.js",
-      "src/scenes/packs/nepal.js"
+      "src/scenes/packs/nepal.js",
+      "src/voice/localConfig.js",
+      "src/voice/localProfiles.json",
+      "src/localAiSettings.js",
+      "src/voice/configuredSession.js",
+      "src/voice/localSession.js",
+      "src/voice/localConversation.js",
+      "src/voice/actionSchemas.js",
+      "src/voice/browserLocalRuntime.js",
+      "src/voice/localModelCache.js",
+      "src/voice/localModels.json",
+      "src/localModelControls.js",
+      "src/voice/localDownloads.js",
+      "src/voice/localAudioCapture.js"
     ],
     "external": [
       "@mapbox/vector-tile",

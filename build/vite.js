@@ -12,6 +12,14 @@ export function createBrowserViteConfig({
 } = {}) {
   return {
     plugins: [cesium(), applicationHtmlPlugin(), ...plugins],
+    worker: { format: 'es' },
+    optimizeDeps: {
+      include: [
+        '@huggingface/transformers',
+        'onnxruntime-web/webgpu',
+        '@diffusionstudio/piper-wasm',
+      ],
+    },
     ...(publicDir === undefined ? {} : { publicDir }),
     server: {
       host: host || 'localhost',

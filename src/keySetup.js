@@ -1,4 +1,6 @@
 import { createSurfaceKeyboard } from './ui/surfaceKeyboard.js';
+import { appendAiSettings, collectAiSettings } from './localAiSettings.js';
+import { hasLocalDownloads } from './voice/localDownloads.js';
 
 /**
  * The POWER UP surface — paste a key, get a power.
@@ -62,7 +64,7 @@ export function stripKeylessBasemapFromHash(hash) {
 const TIER_DOTS = Object.freeze({ metered: '🔴', free: '🟡' });
 
 /** Build one key row. All content is our own registry text, set via textContent. */
-function buildRow(documentRef, key) {
+function buildRow(documentRef, key, ai, onCleanup) {
   const row = documentRef.createElement('section');
   row.className = 'key-setup-row';
   row.dataset.keyId = key.id;
@@ -76,7 +78,7 @@ function buildRow(documentRef, key) {
   led.className = 'key-setup-led';
   led.setAttribute('aria-hidden', 'true');
   const title = documentRef.createElement('strong');
-  title.textContent = key.title;
+  title.textContent = key.id === 'openai' && ai ? 'AI ASSISTANT' : key.title;
   const tier = documentRef.createElement('span');
   tier.className = 'key-setup-tier';
   tier.textContent = TIER_DOTS[key.tier] || '';
@@ -144,6 +146,8 @@ function buildRow(documentRef, key) {
     }
     row.append(fields);
   }
+  if (key.id === 'openai' && ai)
+    onCleanup(appendAiSettings(documentRef, row, ai));
   return row;
 }
 
@@ -163,12 +167,14 @@ export async function initKeySetup({
   const lifetime = new AbortController();
   let disposed = false;
   let disposeControls = () => {};
+  let rowDisposers = [];
   const destroy = () => {
     if (disposed) return;
     disposed = true;
     lifetime.abort();
     signal?.removeEventListener('abort', destroy);
     disposeControls();
+    for (const dispose of rowDisposers) dispose();
     chip.remove();
     root.remove();
   };
@@ -210,11 +216,17 @@ export async function initKeySetup({
     chipLabel.textContent = keySetupChipLabel(status);
     // Fully powered is the owner's clean screen: the chip retires. The dialog
     // stays reachable this session (and via ?setup=1) to swap or verify keys.
-    chip.hidden = status.setCount >= status.total;
+    chip.hidden = status.setCount >= status.total && !status.ai;
     if (!rowsHost) return;
+    for (const dispose of rowDisposers) dispose();
+    rowDisposers = [];
     rowsHost.textContent = '';
     for (const key of status.keys || [])
-      rowsHost.append(buildRow(documentRef, key));
+      rowsHost.append(
+        buildRow(documentRef, key, status.ai, (dispose) =>
+          rowDisposers.push(dispose),
+        ),
+      );
   };
 
   const visible = () =>
@@ -265,6 +277,10 @@ export async function initKeySetup({
 
   const submitUpdates = async (updates, doneVerb) => {
     if (disposed || busy) return;
+    if (hasLocalDownloads()) {
+      say('Wait for model downloads to finish, or cancel them before saving.');
+      return;
+    }
     const googleWasUnset = !status?.keys?.find(
       (key) => key.id === 'google-maps',
     )?.set;
@@ -327,8 +343,12 @@ export async function initKeySetup({
         value: input.value,
       })),
     );
+    Object.assign(
+      updates,
+      collectAiSettings(root.querySelectorAll('[data-ai-setting]')),
+    );
     if (!Object.keys(updates).length) {
-      say('Paste at least one key first.');
+      say('Paste a key or change an AI setting first.');
       return;
     }
     await submitUpdates(updates, 'Saved to');

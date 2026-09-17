@@ -33,7 +33,8 @@ async function handleHudSummary(req, res) {
     return;
   }
 
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey =
+    process.env.GEV_AI_PROVIDER === 'local' ? '' : process.env.OPENAI_API_KEY;
   const keyless = keylessHudSummaryResponse(apiKey);
   if (keyless) {
     res.statusCode = keyless.statusCode;
